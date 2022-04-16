@@ -1,0 +1,40 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+<meta http-equiv="refresh" content="5">
+<div class="text-center">
+    <h1 class="display-4">Total: @await Model.ProxyRepo.CountAvaliableAsync()    Https: @await Model.ProxyRepo.CountAvaliableAsync(onlyHttps:true) </h1>
+    <h1 class="display-4">Checking: @await Model.ProxyRepo.CountCheckingAsync() Wait: @await Model.ProxyRepo.CountWaitToCheckAsync()</h1>
+    <h1 class="display-4">Found: @await Model.ProxyRepo.CountAsync()</h1>
+    <table class="table mt-5">
+        <thead>
+        <tr>
+            <th scope="col">Source</th>
+            <th scope="col">Url</th>
+            <th scope="col">Type</th>
+            <th scope="col">Http</th>
+            <th scope="col">Https</th>
+            <th scope="col">Add</th>
+            <th scope="col">Last Check</th>
+            <th scope="col">Success</th>
+            <th scope="col">Fail</th>
+        </tr>
+    </thead>
+    @foreach (var proxy in Model.Proxies)
+    {
+        <tr>
+            <td>@proxy.Source</td>
+            <td>@proxy.Url</td>
+            <td>@Enum.GetName(proxy.Type)</td>
+            <td>@proxy.Http.Latency</td>
+            <td>@proxy.Https.Latency</td>
+            <td>@proxy.AddTime.ToLocalTime()</td>
+            <td>@proxy.LastCheckTime.ToLocalTime()</td>
+            <td>@proxy.CheckSuccessCount</td>
+            <td>@proxy.CheckFailCount</td>
+        </tr>
+    }
+    </table>
+</div>
