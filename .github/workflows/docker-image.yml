@@ -15,5 +15,4 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      working-directory: ./ProxyPool
-      run: docker build . --file Dockerfile --tag rickyhao/proxypool:$(date +%s)
+      run: docker build . --file ProxyPool/Dockerfile --tag rickyhao/proxypool:$(date +%s)
