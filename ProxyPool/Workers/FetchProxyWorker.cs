@@ -61,29 +61,37 @@ namespace ProxyPool.Workers
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                if (await proxyRepo.CountAvaliableAsync(cancellationToken: stoppingToken) < configuration.FetchTriggerProxyCount)
+                try
                 {
-                    logger.LogInformation("Fetch new proxy.");
-                    foreach (var source in status.ProxySources)
+
+                    if (await proxyRepo.CountAvaliableAsync(cancellationToken: stoppingToken) < configuration.FetchTriggerProxyCount)
                     {
-                        var newProxies = await source.FetchProxy();
-                        foreach (var proxy in newProxies)
+                        logger.LogInformation("Fetch new proxy.");
+                        foreach (var source in status.ProxySources)
                         {
-                            if (await proxyRepo.AddProxy(proxy, cancellationToken: stoppingToken))
+                            var newProxies = await source.FetchProxy();
+                            foreach (var proxy in newProxies)
                             {
-                                logger.LogDebug("[{source}] Found proxy: {url}.", source.SourceName, proxy.Url);
+                                if (await proxyRepo.AddProxy(proxy, cancellationToken: stoppingToken))
+                                {
+                                    logger.LogDebug("[{source}] Found proxy: {url}.", source.SourceName, proxy.Url);
+                                }
                             }
+                            logger.LogInformation("[{source}] Found {count} proxies.", source.SourceName, newProxies.Count);
                         }
-                        logger.LogInformation("[{source}] Found {count} proxies.", source.SourceName, newProxies.Count);
                     }
+                    await Task.Delay(TimeSpan.FromSeconds(configuration.FetchIntervalSeconds), stoppingToken);
+                    logger.LogInformation("Avaliable Total {total}, Https {https}, Checking {check}, Wait to Check {wait}, Founded {found}.",
+                        await proxyRepo.CountAvaliableAsync(cancellationToken: stoppingToken),
+                        await proxyRepo.CountAvaliableAsync(onlyHttps: true, cancellationToken: stoppingToken),
+                        await proxyRepo.CountCheckingAsync(cancellationToken: stoppingToken),
+                        await proxyRepo.CountWaitToCheckAsync(cancellationToken: stoppingToken),
+                        await proxyRepo.CountAsync(cancellationToken: stoppingToken));
                 }
-                await Task.Delay(TimeSpan.FromSeconds(configuration.FetchIntervalSeconds), stoppingToken);
-                logger.LogInformation("Avaliable Total {total}, Https {https}, Checking {check}, Wait to Check {wait}, Founded {found}.",
-                    await proxyRepo.CountAvaliableAsync(cancellationToken: stoppingToken),
-                    await proxyRepo.CountAvaliableAsync(onlyHttps: true, cancellationToken: stoppingToken),
-                    await proxyRepo.CountCheckingAsync(cancellationToken: stoppingToken),
-                    await proxyRepo.CountWaitToCheckAsync(cancellationToken: stoppingToken),
-                    await proxyRepo.CountAsync(cancellationToken: stoppingToken));
+                catch (Exception ex)
+                {
+                    logger.LogError("{ex}", ex);
+                }
             };
         }
     }

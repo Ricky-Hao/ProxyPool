@@ -104,6 +104,10 @@ namespace ProxyPool.Workers
                         else
                             logger.LogError("ValidateAsync unknown cancelled: {ex}", ex);
                     }
+                    catch (Exception ex)
+                    {
+                        logger.LogError("{ex}", ex);
+                    }
                 }
                 else
                     await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);

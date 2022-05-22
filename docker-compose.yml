@@ -1,0 +1,21 @@
+version: '3.9'
+
+services:
+  proxy_pool:
+    image: ghcr.io/ricky-hao/proxypool:master-20220416
+    restart: always
+    container_name: proxy_pool
+    volumes:
+      - appsettings.json:appsettings.json:ro
+    ports:
+      - 8000:8000
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: '1024M'

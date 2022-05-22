@@ -43,6 +43,10 @@ namespace ProxyPool.Workers
                     else
                         logger.LogError("FoundTTLAsync unknown cancelled: {ex}", ex);
                 }
+                catch (Exception ex)
+                {
+                    logger.LogError("{ex}", ex);
+                }
             }
         }
     }

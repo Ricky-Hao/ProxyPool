@@ -21,7 +21,7 @@ namespace ProxyPool.Repositories
             get
             {
                 var lastCheckTime = DateTimeOffset.UtcNow.AddSeconds(-configuration.CheckIntervalSeconds).UtcDateTime;
-                return f => f.LastCheckTime < lastCheckTime && f.CheckFailCount < configuration.CheckFailedCountLimit && f.Checking == false;
+                return f => f.LastCheckTime < lastCheckTime & f.CheckFailCount < configuration.CheckFailedCountLimit & f.Checking == false;
             }
         }
         public ProxyRepository(ILogger<ProxyRepository> logger, IMongoDatabase database, ProxyPoolConfiguration configuration)
@@ -50,7 +50,7 @@ namespace ProxyPool.Repositories
 
         public async Task<bool> AddProxy(Proxy proxy, CancellationToken cancellationToken = default)
         {
-            var cursor = await Collection.FindAsync(f => f.Host == proxy.Host && f.Port == proxy.Port && f.Type == proxy.Type, cancellationToken: cancellationToken);
+            var cursor = await Collection.FindAsync(f => f.Host == proxy.Host & f.Port == proxy.Port & f.Type == proxy.Type, cancellationToken: cancellationToken);
             await cursor.MoveNextAsync(cancellationToken);
 
             if (cursor.Current.FirstOrDefault() != null)
