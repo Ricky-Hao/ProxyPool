@@ -87,14 +87,7 @@ namespace ProxyPool.Workers
 
                         await foreach (var proxy in cursor)
                         {
-                            if (actionBlock.InputCount < configuration.CheckConcurrency)
-                            {
-                                var postResult = actionBlock.Post(proxy);
-                                if (postResult)
-                                    await proxyRepo.SetAsync(proxy, f => f.Checking, true, stoppingToken);
-                            }
-                            else
-                                break;
+                             await actionBlock.SendAsync(proxy);
                         }
                     }
                     catch (TaskCanceledException ex)
