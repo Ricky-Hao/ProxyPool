@@ -18,8 +18,7 @@ namespace ProxyPool.Workers
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var task = new Task(async () => await FoundTTLAsync(stoppingToken));
-            task.Start();
+            var task = Task.Run(async () => await FoundTTLAsync(stoppingToken), stoppingToken);
             await task.WaitAsync(stoppingToken);
         }
         private async Task FoundTTLAsync(CancellationToken stoppingToken)
@@ -46,6 +45,7 @@ namespace ProxyPool.Workers
                 catch (Exception ex)
                 {
                     logger.LogError("{ex}", ex);
+                    await Task.Delay(10000, stoppingToken);
                 }
             }
         }
