@@ -11,6 +11,8 @@ namespace ProxyPool.Models.Configurations
 
         public int MaxConnectionPoolSize { get; set; } = 100;
 
+        public int WaitQueueTimeout { get; set; } = 300;
+
         public void Validate()
         {
             ConfigurationTools.EnsureStringNotNullOrEmpty(Url);

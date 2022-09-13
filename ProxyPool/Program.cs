@@ -47,6 +47,7 @@ builder.Services.AddSingleton<IMongoDatabase>(provider =>
     var setting = MongoClientSettings.FromConnectionString(config.Url);
     setting.MaxConnecting = config.MaxConnecting;
     setting.MaxConnectionPoolSize = config.MaxConnectionPoolSize;
+    setting.WaitQueueTimeout = TimeSpan.FromSeconds(config.WaitQueueTimeout);
     var client = new MongoClient(setting);
     return client.GetDatabase(config.Database);
 });
