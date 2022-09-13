@@ -44,7 +44,10 @@ builder.Services.AddSingleton<Validator>();
 builder.Services.AddSingleton<IMongoDatabase>(provider =>
 {
     var config = provider.GetRequiredService<ProxyPoolConfiguration>().MongoDB;
-    var client = new MongoClient(config.Url);
+    var setting = MongoClientSettings.FromConnectionString(config.Url);
+    setting.MaxConnecting = 500;
+    setting.MaxConnectionPoolSize = 1000;
+    var client = new MongoClient(setting);
     return client.GetDatabase(config.Database);
 });
 builder.Services.AddSingleton<ProxyRepository>();
