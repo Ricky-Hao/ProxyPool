@@ -33,7 +33,7 @@ namespace ProxyPool.Workers
                 {
                     logger.LogError("{ex}", ex);
                 }
-            }, new ExecutionDataflowBlockOptions() { MaxDegreeOfParallelism = configuration.CheckConcurrency });
+            }, new ExecutionDataflowBlockOptions() { MaxDegreeOfParallelism = configuration.CheckConcurrency, BoundedCapacity = configuration.CheckConcurrency });
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

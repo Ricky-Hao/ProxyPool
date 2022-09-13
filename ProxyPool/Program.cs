@@ -45,8 +45,8 @@ builder.Services.AddSingleton<IMongoDatabase>(provider =>
 {
     var config = provider.GetRequiredService<ProxyPoolConfiguration>().MongoDB;
     var setting = MongoClientSettings.FromConnectionString(config.Url);
-    setting.MaxConnecting = 500;
-    setting.MaxConnectionPoolSize = 1000;
+    setting.MaxConnecting = config.MaxConnecting;
+    setting.MaxConnectionPoolSize = config.MaxConnectionPoolSize;
     var client = new MongoClient(setting);
     return client.GetDatabase(config.Database);
 });
