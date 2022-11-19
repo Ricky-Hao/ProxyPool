@@ -33,9 +33,28 @@ namespace ProxyPool.ProxySources
             try
             {
                 using var client = new HttpClient();
-                var response = await client.GetAsync(configuration.Url);
-                if (response == null || !response.IsSuccessStatusCode)
-                    return proxies;
+                HttpResponseMessage response;
+                if (configuration.Payload.Count == 0)
+                {
+                    response = await client.GetAsync(configuration.Url);
+                    if (response == null || !response.IsSuccessStatusCode)
+                        return proxies;
+                }
+                else
+                {
+                    var payloads = new List<KeyValuePair<string, string>>();
+                    foreach (var dict in configuration.Payload)
+                    {
+                        foreach (var kv in dict)
+                        {
+                            payloads.Add(new KeyValuePair<string, string>(kv.Key, kv.Value));
+                        }
+                    }
+
+                    response = await client.PostAsync(configuration.Url, new FormUrlEncodedContent(payloads));
+                    if (response == null || !response.IsSuccessStatusCode)
+                        return proxies;
+                }
 
                 var charset = response.Content.Headers.ContentType?.CharSet;
                 string data;
