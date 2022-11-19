@@ -61,6 +61,11 @@ namespace ProxyPool.Workers
                     {
                          await actionBlock.SendAsync(proxy);
                     }
+
+                    while (actionBlock.InputCount != 0)
+                    {
+                        await Task.Delay(configuration.CheckIntervalSeconds, stoppingToken);
+                    }
                 }
                 catch (TaskCanceledException ex)
                 {
