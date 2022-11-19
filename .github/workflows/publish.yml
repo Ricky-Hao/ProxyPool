@@ -7,7 +7,8 @@ name: Create and publish a Docker image
 
 on:
   push:
-    branches: ['master']
+    tags:
+      - v1.*
 
 env:
   REGISTRY: ghcr.io
@@ -43,7 +44,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=ref,event=branch,suffix=-{{date 'YYYYMMDD-HHmmss'}}
+            type=semver,pattern={{version}}
           
 
       - name: Build and push Docker image
@@ -51,7 +52,7 @@ jobs:
         with:
           context: .
           file: ./ProxyPool/Dockerfile
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
