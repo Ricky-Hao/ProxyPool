@@ -92,15 +92,7 @@ namespace ProxyPool.Workers
                             .Set(f => f.LastCheckTime, DateTime.UtcNow),
                         cancellationToken: tokenSource.Token);
                     else
-                        await proxyRepo.Collection.UpdateOneAsync(f => f.Id == newProxy.Id,
-                            Builders<Proxy>.Update
-                                .Inc(f => f.CheckFailCount, 1)
-                                .Set(f => f.CheckSuccessCount, 0)
-                                .Set(f => f.Http, newProxy.Http)
-                                .Set(f => f.Https, newProxy.Https)
-                                .Set(f => f.Checking, false)
-                                .Set(f => f.LastCheckTime, DateTime.UtcNow),
-                            cancellationToken: tokenSource.Token);
+                        await proxyRepo.Collection.DeleteOneAsync(f => f.Id == newProxy.Id);
                 }
                 else
                 {

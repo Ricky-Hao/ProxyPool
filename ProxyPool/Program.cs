@@ -31,9 +31,13 @@ builder.Services.AddLogging(builder =>
 */
 
 
-builder.Services.AddSingleton<ProxyPoolConfiguration>(provider =>
+builder.Services.AddSingleton(provider =>
 {
     var config = provider.GetRequiredService<IConfiguration>().GetRequiredSection("ProxyPool").Get<ProxyPoolConfiguration>();
+    if (config is null)
+    {
+        throw new NullReferenceException(nameof(ProxyPoolConfiguration));
+    }
     config.Validate();
     return config;
 });
