@@ -24,7 +24,7 @@ namespace ProxyPool.Controllers
         }
 
 
-        public async Task<ActionResult<Proxy>> Get(bool? onlyHttps = null, int? latency = null, int? successCount = null, int? failCount = null)
+        public async Task<ActionResult<Proxy>> Get(bool onlyHttps = false, int? latency = null, int? successCount = null, int? failCount = null)
         {
             var filter = proxyRepo.AvaliableFilterBuilder(onlyHttps, latency, successCount, failCount);
             var sampleStage = BsonDocument.Parse(@"{$sample: {size: 1}}");
@@ -37,7 +37,7 @@ namespace ProxyPool.Controllers
             return Ok(proxy);
         }
 
-        public async Task<ActionResult<ProxyStatusResponse>> Status(bool? onlyHttps = null, int? latency = null, int? successCount = null, int? failCount = null)
+        public async Task<ActionResult<ProxyStatusResponse>> Status(bool onlyHttps = false, int? latency = null, int? successCount = null, int? failCount = null)
         {
             var response = new ProxyStatusResponse()
             {

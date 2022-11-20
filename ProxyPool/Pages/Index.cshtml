@@ -6,8 +6,7 @@
 <meta http-equiv="refresh" content="5">
 <div class="text-center">
     <h1 class="display-4">Total: @await Model.ProxyRepo.CountAvaliableAsync()    Https: @await Model.ProxyRepo.CountAvaliableAsync(onlyHttps:true) </h1>
-    <h1 class="display-4">Checking: @await Model.ProxyRepo.CountCheckingAsync() Wait: @await Model.ProxyRepo.CountWaitToCheckAsync()</h1>
-    <h1 class="display-4">Found: @await Model.ProxyRepo.CountAsync()</h1>
+    <h1 class="display-4">Wait: @await Model.ProxyRepo.CountWaitToCheckAsync()  Found: @await Model.ProxyRepo.CountAsync()</h1>
     <table class="table mt-5">
         <thead>
         <tr>

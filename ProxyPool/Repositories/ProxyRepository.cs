@@ -88,7 +88,7 @@ namespace ProxyPool.Repositories
             return await Collection.UpdateOneAsync(f => f.Id == proxy.Id, Builders<Proxy>.Update.Set(field, value), cancellationToken: cancellationToken);
         }
 
-        public FilterDefinition<Proxy> AvaliableFilterBuilder(bool? onlyHttps = null, int? latency = null, int? successCount = null, int? failCount = null)
+        public FilterDefinition<Proxy> AvaliableFilterBuilder(bool onlyHttps = false, int? latency = null, int? successCount = null, int? failCount = null)
         {
             var builder = Builders<Proxy>.Filter;
             if (!successCount.HasValue)
@@ -99,7 +99,7 @@ namespace ProxyPool.Repositories
 
             if (latency.HasValue)
             {
-                if (onlyHttps.HasValue && onlyHttps.Value)
+                if (onlyHttps)
                     filter &= builder.Eq(f => f.Https.Status, true) & builder.Lte(f => f.Https.Latency, latency.Value);
                 else
                     filter &= (builder.Eq(f => f.Http.Status, true) & builder.Lte(f => f.Http.Latency, latency.Value) | builder.Eq(f => f.Https.Status, true) & builder.Lte(f => f.Https.Latency, latency.Value));
@@ -107,7 +107,7 @@ namespace ProxyPool.Repositories
             return filter;
         }
 
-        public async Task<long> CountAvaliableAsync(bool? onlyHttps = null, int? latency = null, int? successCount = null, int? failCount = null, CancellationToken cancellationToken = default)
+        public async Task<long> CountAvaliableAsync(bool onlyHttps = false, int? latency = null, int? successCount = null, int? failCount = null, CancellationToken cancellationToken = default)
         {
             try
             {
