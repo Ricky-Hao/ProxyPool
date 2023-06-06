@@ -87,11 +87,10 @@ app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapAreaControllerRoute("api_route", "Api", "Api/{controller}/{action}/{id?}");
     ConventionalRoutingSwaggerGen.UseRoutes(endpoints);
 });
 
-
+app.MapAreaControllerRoute("api_route", "Api", "Api/{controller}/{action}/{id?}");
 
 app.MapRazorPages();
 

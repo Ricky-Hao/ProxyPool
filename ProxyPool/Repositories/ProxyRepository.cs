@@ -97,12 +97,15 @@ namespace ProxyPool.Repositories
                 failCount = configuration.CheckFailedCountLimit;
             var filter = builder.Lte(f => f.CheckFailCount, failCount) & builder.Gt(f => f.CheckSuccessCount, successCount.Value);
 
+            if (onlyHttps)
+                filter &= builder.Eq(f => f.Https.Status, true);
+
             if (latency.HasValue)
             {
                 if (onlyHttps)
-                    filter &= builder.Eq(f => f.Https.Status, true) & builder.Lte(f => f.Https.Latency, latency.Value);
+                    filter &= builder.Lte(f => f.Https.Latency, latency.Value);
                 else
-                    filter &= (builder.Eq(f => f.Http.Status, true) & builder.Lte(f => f.Http.Latency, latency.Value) | builder.Eq(f => f.Https.Status, true) & builder.Lte(f => f.Https.Latency, latency.Value));
+                    filter &= builder.Lte(f => f.Http.Latency, latency.Value) | builder.Lte(f => f.Https.Latency, latency.Value);
             }
             return filter;
         }

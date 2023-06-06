@@ -17,7 +17,7 @@ namespace ProxyPool.Workers
         {
             this.configuration = configuration;
             this.logger = logger;
-            this.proxyRepo = proxyRepository;
+            proxyRepo = proxyRepository;
 
             status = host.Services.GetRequiredService<GlobalStatus>();
 
